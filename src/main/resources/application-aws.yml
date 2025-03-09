@@ -1,0 +1,8 @@
+# Below are custom application YML settings
+
+elasticsearch:
+  domain: ${es.domain}
+  port: ${es.port}
+  scheme: ${es.scheme}
+  connect-timeout: 5000 # 5 secs
+  socket-timeout: 300000 # 300 secs / 5 mins

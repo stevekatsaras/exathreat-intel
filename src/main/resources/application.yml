@@ -1,0 +1,530 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /intel
+    session:
+      cookie:
+        http-only: false
+      tracking-modes:
+      - cookie
+  forward-headers-strategy: framework
+spring:
+  application:
+    name: exathreat-intel
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
+
+# Below are custom application YML settings
+
+feeds:
+  -
+    code: alienvault-reputation
+    name: AlienVault Reputation
+    managed: AlienVault
+    url: http://reputation.alienvault.com/reputation.data
+    cron: "0 0 8 * * *" # run at 08:00AM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 80
+    delimeter: "#"
+    fields:
+      - 0:ioc
+      - 1:alienvault-reputation.reliability
+      - 2:alienvault-reputation.risk
+      - 3:alienvault-reputation.activity
+  -
+    code: alphasoc-ryuk-c2
+    name: AlphaSOC Ryuk C2
+    managed: AlphaSOC
+    url: https://feeds.alphasoc.net/ryuk.txt
+    cron: "0 15 8 * * *" # run at 08:15AM every day
+    enabled: true
+    category: network
+    type: domain
+    confidence: 50
+    exclude-regex:
+      - ^#.*
+  -
+    code: botvrij-eu-ips
+    name: Botvrij.eu - ips
+    managed: Botvrij.eu
+    url: https://www.botvrij.eu/data/ioclist.ip-dst.raw
+    cron: "0 30 8 * * *" # run at 08:30AM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 50
+  - 
+    code: botvrij-eu-domains
+    name: Botvrij.eu - domains
+    managed: Botvrij.eu
+    url: https://www.botvrij.eu/data/ioclist.domain.raw
+    cron: "0 45 8 * * *" # run at 08:45AM every day
+    enabled: true
+    category: network
+    type: domain
+    confidence: 50
+  -
+    code: botvrij-eu-hostnames
+    name: Botvrij.eu - hostnames
+    managed: Botvrij.eu
+    url: https://www.botvrij.eu/data/ioclist.hostname.raw
+    cron: "0 0 9 * * *" # run at 09:00AM every day
+    enabled: true
+    category: network
+    type: domain
+    confidence: 50
+  -
+    code: brute-force-blocker
+    name: Brute Force Blocker
+    managed: Daniel Gerzo
+    url: http://danger.rulez.sk/projects/bruteforceblocker/blist.php
+    cron: "0 15 9 * * *" # run at 09:15AM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 80
+    exclude-regex:
+      - ^#.*
+    delimeter: "\t"
+    fields:
+      - 0:ioc
+  -
+    code: darklist
+    name: Darklist
+    managed: Darklist
+    url: https://www.darklist.de/raw.php
+    cron: "0 30 9 * * *" # run at 09:30AM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 50
+    exclude-regex:
+      - ^#.*
+      - ^\s*
+  -
+    code: proofpoint-compromised-ips
+    name: ProofPoint Compromised IPs
+    managed: ProofPoint
+    url: https://rules.emergingthreats.net/blockrules/compromised-ips.txt
+    cron: "0 45 9 * * *" # run at 09:45AM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 50
+  -
+    code: feodotracker-ip-blocklist
+    name: Feodo Tracker - IP Blocklist
+    managed: Abuse.ch
+    url: https://feodotracker.abuse.ch/downloads/ipblocklist.txt
+    cron: "0 0 10 * * *" # run at 10:00AM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 100
+    exclude-regex:
+      - ^#.*
+  -
+    code: greensnow-blocklist
+    name: Green Snow - Blocklist
+    managed: Green Snow
+    url: http://blocklist.greensnow.co/greensnow.txt
+    cron: "0 15 10 * * *" # run at 10:15AM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 70
+  -
+    code: hancitor-ip
+    name: Linux Tracker - Blocklists
+    managed: Linux Tracker
+    url: https://raw.githubusercontent.com/LinuxTracker/Blocklists/master/HancitorIPs.txt
+    cron: "0 30 10 * * *" # run at 10:30AM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 50
+    exclude-regex:
+      - ^#.*
+      - ^\s*
+    delimeter: " # "
+    fields:
+      - 0:ioc
+      - 1:hancitor-ip.desc
+  -
+    code: infosec-certpa-domains
+    name: InfoSec Cert - PA Domains
+    managed: INFOSEC CERT - PA
+    url: https://infosec.cert-pa.it/analyze/listdomains.txt
+    cron: "0 45 10 * * *" # run at 10:45AM every day
+    enabled: true
+    category: network
+    type: domain
+    confidence: 80
+    exclude-regex:
+      - ^#.*
+  -
+    code: infosec-certpa-ips
+    name: InfoSec Cert - PA IPs
+    managed: INFOSEC CERT - PA
+    url: https://infosec.cert-pa.it/analyze/listip.txt
+    cron: "0 0 11 * * *" # run at 11:00AM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 80
+    exclude-regex:
+      - ^#.*
+  -
+    code: infosec-certpa-url
+    name: InfoSec Cert - PA URL
+    managed: INFOSEC CERT - PA
+    url: https://infosec.cert-pa.it/analyze/listurls.txt
+    cron: "0 15 11 * * *" # run at 11:15AM every day
+    enabled: true
+    category: network
+    type: url
+    confidence: 80
+    exclude-regex:
+      - ^#.*
+  -
+    code: joewein-domain
+    name: Joe Wein Domain
+    managed: Joe Wein
+    url: http://www.joewein.net/dl/bl/dom-bl.txt
+    cron: "0 30 11 * * *" # run at 11:30AM every day
+    enabled: true
+    category: network
+    type: domain
+    confidence: 80
+  -
+    code: nocoin-domain
+    name: NoCoin Domain
+    managed: NoCoin
+    url: https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt
+    cron: "0 45 11 * * *" # run at 11:45AM every day
+    enabled: true
+    category: network
+    type: domain
+    confidence: 50
+    exclude-regex:
+      - ^#.*
+      - ^\s*
+    delimeter: " "
+    fields:
+      - 1:ioc
+  -
+    code: openphish
+    name: OpenPhish
+    managed: OpenPhish 
+    url: https://openphish.com/feed.txt
+    cron: "0 0 12 * * *" # run at 12:00PM every day
+    enabled: true
+    category: network
+    type: url
+    confidence: 80
+  -
+    code: vxvault-url
+    name: VX Vault URL
+    managed: VX Vault 
+    url: http://vxvault.net/URL_List.php
+    cron: "0 15 12 * * *" # run at 12:15PM every day
+    enabled: true
+    category: network
+    type: url
+    confidence: 80
+    include-regex:
+      - ^http.*
+  -
+    code: botnet-c2-ip
+    name: Botnet C2 IP Blacklist
+    managed: Abuse.ch
+    url: https://sslbl.abuse.ch/blacklist/sslipblacklist.csv
+    cron: "0 30 12 * * *" # run at 12:30PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 100
+    exclude-regex:
+      - ^#.*
+    delimeter: ","
+    fields:
+      - 1:ioc
+      - 2:botnet-c2-ip.port
+  -
+    code: blocklist-de-strongip
+    name: Blocklist.de Strong IP
+    managed: Blocklist.de
+    url: https://lists.blocklist.de/lists/strongips.txt
+    cron: "0 45 12 * * *" # run at 12:45PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 80
+  -
+    code: binary-defense-banlist
+    name: Binary Defense Banlist
+    managed: Binary Defense
+    url: https://www.binarydefense.com/banlist.txt
+    cron: "0 00 13 * * *" # run at 1:00PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 80
+    exclude-regex:
+      - ^#.*
+      - ^\s*
+  -
+    code: bitnodes-ipset
+    name: BitNodes IPSet
+    managed: BitNodes
+    url: https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/bitcoin_nodes_1d.ipset
+    cron: "0 15 13 * * *" # run at 1:15PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 70
+    exclude-regex:
+      - ^#.*
+      - ^\s*
+  -
+    code: blackbook-domains
+    name: Blackbook Domains
+    managed: Blackbook
+    url: https://raw.githubusercontent.com/stamparm/blackbook/master/blackbook.txt
+    cron: "0 30 13 * * *" # run at 1:30PM every day
+    enabled: true
+    category: network
+    type: domain
+    confidence: 50
+  -
+    code: botscout-ipset
+    name: BotScout IPSet
+    managed: BotScout
+    url: https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/botscout_1d.ipset
+    cron: "0 45 13 * * *" # run at 1:45PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 70
+    exclude-regex:
+      - ^#.*
+      - ^\s*
+  -
+    code: cins-army-list
+    name: CINS Army List
+    managed: CINS Army List
+    url: http://cinsscore.com/list/ci-badguys.txt
+    cron: "0 00 14 * * *" # run at 2:00PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 80
+  -
+    code: cobalt-strike-server
+    name: Cobalt Strike Server
+    managed: Cobalt Strike
+    url: https://raw.githubusercontent.com/fox-it/cobaltstrike-extraneous-space/master/cobaltstrike-servers.csv
+    cron: "0 15 14 * * *" # run at 2:15PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 50
+    exclude-regex:
+      - ^ip,port,.*
+    delimeter: ","
+    fields:
+      - 0:ioc
+      - 1:cobalt-strike-server.port
+  -
+    code: cruzit-blacklist
+    name: Cruzit Blacklist
+    managed: Cruzit
+    url: https://www.cruzit.com/xxwbl2txt.php
+    cron: "0 30 14 * * *" # run at 2:30PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 50
+    exclude-regex:
+      - ^\s*
+      - ^ipaddress.*
+  -
+    code: cybercrime-tracker
+    name: Cybercrime Tracker
+    managed: Cybercrime Tracker
+    url: http://cybercrime-tracker.net/all.php
+    cron: "0 45 14 * * *" # run at 2:45PM every day
+    enabled: true
+    category: network
+    type: url
+    confidence: 80
+  -
+    code: james-brine-iplist
+    name: James Brine IPList
+    managed: James Brine
+    url: https://jamesbrine.com.au/iplist.txt
+    cron: "0 00 15 * * *" # run at 3:00PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 80
+  -
+    code: rutgers
+    name: Rutgers
+    managed: Rutgers
+    url: https://report.cs.rutgers.edu/DROP/attackers
+    cron: "0 15 15 * * *" # run at 3:15PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 70
+  -
+    code: sblamdotcom-blacklist
+    name: sblam.com Blacklist
+    managed: sblam.com
+    url: https://sblam.com/blacklist.txt
+    cron: "0 30 15 * * *" # run at 3:30PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 70
+    exclude-regex:
+      - ^#.*
+  -
+    code: threatfox
+    name: ThreatFox
+    managed: ThreatFox
+    url: https://threatfox.abuse.ch/export/csv/recent/
+    cron: "0 45 15 * * *" # run at 3:45PM every day
+    enabled: true
+    category: network
+    type: all
+    confidence: 50
+    exclude-regex:
+      - ^#.*
+      - ^"first_seen_utc".*
+    delimeter: ","
+    field-scrape-regex: "[\"]([^\"]*)[\"]" # get text between double-quotes
+    field-transform:
+      - ip:port=ipv4
+      - md5_hash=hash
+      - sha256_hash=hash
+    fields:
+      - 2:ioc
+      - 3:type
+      - 5:threatfox.malware
+      - 9:confidence
+      - 13:threatfox.reporter
+  -
+    code: tor-exit-nodes
+    name: TOR Exit Nodes
+    managed: TOR
+    url: https://check.torproject.org/torbulkexitlist
+    cron: "0 00 16 * * *" # run at 4:00PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 70
+  -
+    code: viriback
+    name: Viriback
+    managed: Viriback
+    url: http://tracker.viriback.com/dump.php
+    cron: "0 15 16 * * *" # run at 4:15PM every day
+    enabled: true
+    category: network
+    type: url
+    confidence: 70
+    exclude-regex:
+      - ^Family.*
+    delimeter: ","
+    fields:
+      - 0:viriback.reporter
+      - 1:ioc
+  -
+    code: ipspamlist
+    name: IPSpamList
+    managed: IPSpamList
+    url: http://www.ipspamlist.com/public_feeds.csv
+    cron: "0 30 16 * * *" # run at 4:30PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 80
+    exclude-regex:
+      - ^#.*
+      - ^first_seen.*
+    delimeter: ","
+    fields:
+      - 2:ioc
+      - 3:ipspamlist.category
+      - 4:ipspamlist.attacks
+  -
+    code: mirai-tracker
+    name: Mirai Tracker
+    managed: Mirai Tracker
+    url: https://mirai.security.gives/data/ip_list.txt
+    cron: "0 45 16 * * *" # run at 4:45PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 50
+    exclude-regex:
+      - ^#.*
+  -
+    code: malsilo-ipv4
+    name: MalSilo IPv4
+    managed: MalSilo
+    url: https://malsilo.gitlab.io/feeds/dumps/ip_list.txt
+    cron: "0 00 17 * * *" # run at 5:00PM every day
+    enabled: true
+    category: network
+    type: ipv4
+    confidence: 70
+    exclude-regex:
+      - ^#.*
+      - ^\s*
+    delimeter: ","
+    field-scrape-regex: "[\"]([^\"]*)[\"]" # get text between double-quotes    
+    fields:
+      - 2:ioc
+  -
+    code: malsilo-domain
+    name: MalSilo Domain
+    managed: MalSilo
+    url: https://malsilo.gitlab.io/feeds/dumps/domain_list.txt
+    cron: "0 15 17 * * *" # run at 5:15PM every day
+    enabled: true
+    category: network
+    type: domain
+    confidence: 70
+    exclude-regex:
+      - ^#.*
+      - ^\s*
+    delimeter: ","
+    field-scrape-regex: "[\"]([^\"]*)[\"]" # get text between double-quotes    
+    fields:
+      - 2:ioc
+  -
+    code: malsilo-url
+    name: MalSilo URL
+    managed: MalSilo
+    url: https://malsilo.gitlab.io/feeds/dumps/url_list.txt
+    cron: "0 30 17 * * *" # run at 5:30PM every day
+    # cron: "*/30 * * * * *"
+    enabled: true
+    category: network
+    type: url
+    confidence: 70
+    exclude-regex:
+      - ^#.*
+      - ^\s*
+    delimeter: ","
+    field-scrape-regex: "[\"]([^\"]*)[\"]" # get text between double-quotes    
+    fields:
+      - 2:ioc

@@ -1,0 +1,11 @@
+server:
+  port: 8082
+
+# Below are custom application YML settings
+
+elasticsearch:
+  domain: 192.168.1.123
+  port: 9200
+  scheme: http
+  connect-timeout: 5000 # 5 secs
+  socket-timeout: 30000 # 30 secs
