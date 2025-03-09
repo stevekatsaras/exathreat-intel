@@ -1,5 +1,43 @@
 exathreat-intel
 ---------------
+A SpringBoot Scheduler that periodically fetches SEIM intelligence and stores it into an ElasticSearch instance. This intelligence is helpful in enriching a Clients ingested events from their network devices. Some of the SEIM intelligence fetched may be: bad/blacklisted IP addresses, bad domains, risk scores, malicious URLs, etc.
+
+Some of the feeds used are:
+
+1. MAXMIND GeoIP2
+2. AlienVault Reputation
+3. AlphaSOC Ryuk C2
+4. Botvrij.eu
+5. Brute Force Blocker
+6. Darklist
+7. ProofPoint Compromised IPs
+8. Feodo Tracker - IP Blocklist
+9. Green Snow - Blocklist
+10. Linux Tracker - Blocklists
+11. InfoSec Cert
+12. Joe Wein
+13. NoCoin
+14. OpenPhish
+15. VX Vault
+16. Botnet C2
+17. Blocklist.de
+18. Binary Defense
+19. BitNodes
+20. Blackbook
+21. BotScout
+22. CINS Army List
+23. Cobalt Strike Server
+24. Cruzit
+25. Cybercrime Tracker
+26. James Brine
+27. Rutgers
+28. sblam.com
+29. ThreatFox
+30. TOR Exit Nodes
+31. Viriback
+32. IPSpamList
+33. Mirai Tracker
+34. MalSilo
 
 This service uses MAXMIND GeoIP2 databases.
 To download the latest, please visit: https://www.maxmind.com/en/accounts/522260/geoip/downloads
